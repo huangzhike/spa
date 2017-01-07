@@ -1,0 +1,31 @@
+
+.about-wraper {
+	height: 100%;
+	background-color: #F4F4F4;
+}
+
+.about-wraper h4 {
+	padding: 5px;
+	background-color: #10a0ea;
+	color: #fff;
+	text-align: center;
+}
+
+.about-wraper .about-group {
+	margin-top: 30px;
+	padding-bottom: 20px;
+	background-color: #fff;
+}
+
+.about-wraper a {
+	color: #10a0ea;
+}
+
+.about-wraper .about-group div {
+	padding: 10px;
+}
+
+.about-wraper .about-group li {
+	padding: 0 30px;
+	font-size: 14px;
+}

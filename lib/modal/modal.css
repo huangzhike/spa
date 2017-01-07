@@ -1,0 +1,143 @@
+
+.modal-back {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 10;
+	background: rgba(0,0,0,.3);
+	font-weight: 500;
+	font-size: 1.125rem
+}
+
+.modal-others {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 11;
+	width: 50%;
+	min-width: 250px;
+	background-color: #f8f8f8;
+	text-align: center;
+	opacity: 0;
+	transition: all .3s;
+	-webkit-transform: translate3d(-50%,-50%,0) scale(.8);
+	transform: translate3d(-50%,-50%,0) scale(.8)
+}
+
+.modal-active .modal-others {
+	opacity: 1;
+	-webkit-transform: translate3d(-50%,-50%,0) scale(1);
+	transform: translate3d(-50%,-50%,0) scale(1)
+}
+
+/*http://tool.lu/ 一个好网站，各种代码美化与格式化，合并，虽然可以用sublime插件或gulp什么的，有感而发*/
+.form-set,.modal-content,.modal-title {
+	padding: .9375rem .625rem
+}
+
+input {
+	display: block;
+	box-sizing: border-box;
+	font-family: inherit;
+	padding: .75rem .5rem;
+	width: 100%;
+	outline: 0;
+	border: 1px solid #ccc
+}
+
+.modal-btns {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	border-top: 1px solid #dedede
+}
+
+.modal-others button {
+	display: block;
+	overflow: hidden;
+	outline: 0;
+	border: none;
+	background: #f8f8f8;
+	color: #0e90d2;
+	text-align: center;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-family: inherit;
+	font-size: 1rem;
+	line-height: 2.75rem;
+	cursor: pointer;
+	-webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+	font-weight: 500;
+}
+
+.modal-others button:nth-child(2) {
+	border-left: 1px solid #dedede;
+} 
+
+.modal-close {
+	position: absolute;
+	top: .3125rem;
+	right: .3125rem;
+	display: block;
+	width: 1.5rem;
+	height: 1.5rem;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+	background-color: #333;
+	cursor: pointer
+}
+
+.modal-action {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	z-index: 100;
+	width: 100%;
+	opacity: 0;
+	transition: all .3s;
+	-webkit-transform: translate3d(0,100%,0);
+	transform: translate3d(0,100%,0)
+}
+
+.modal-active .modal-action {
+	opacity: 1;
+	-webkit-transform: translate3d(0,0,0);
+	transform: translate3d(0,0,0)
+}
+
+.modal-action-group {
+	margin: .625rem;
+	text-align: center
+}
+
+ul {
+	padding: 0;
+	background: #fff;
+	list-style: none
+}
+
+.modal-action-group li {
+	margin-bottom: -1px;
+	padding: .625rem .9375rem;
+	border: 1px solid #e6e6e6;
+	border-width: 1px 0;
+	color: #888;
+	font-size: .875rem;
+	font-size: 1rem;
+	align-items: center
+}
+
+.modal-action-group button {
+	margin: 0 1rem 1rem 0;
+	padding: .75em 1em;
+	width: 100%;
+	border: 1px solid #3bb4f2;
+	background: #3bb4f2;
+	color: #fff;
+	font-size: 1rem;
+	cursor: pointer
+}

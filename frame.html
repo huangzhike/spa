@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<title>SPA</title>
+	<link rel="stylesheet" href="css/loading.css">
+	<link rel="stylesheet" href="css/spa.css">
+</head>
+<body>
+	<!-- 内容容器 -->
+	<div id="spa-page" class="spa-page"></div>
+	<!-- 底栏 -->
+	<div class="spa-footer">
+		<div><span id="spa-back" class="spa-back">Back</span></div>
+		<div><a href="#home">Home</a></div>
+		<div><a href="#about">About</a></div>
+		<div><a href="#more">More</a></div>
+	</div>
+	<div id="spa-loading" class="spa-loading">
+		<div class="spinner">
+			<div class="spinner1"></div>
+			<!-- loading css 截取自PP助手 -->
+			<div class="spinner2"></div>
+		</div>
+	</div>
+
+	<script src="js/spa.js"></script>
+	<script>
+		// 是手机则去除iframe
+		if ("ontouchstart" in window && top.location !== self.location) {
+			top.location.href = self.location.href;
+		}
+		window.onload = function() {
+			var spa = new SPA();
+			// 给页面注册，或者说映射（mapping）
+			spa.route("home", "lib/home/home.html", function(back, page, partial) {
+				spa.callbackAnimation(back, page, partial);
+				console.log(partial);
+			});
+			spa.route("about", "lib/about/about.html", function(back, page, partial) {
+				spa.callbackAnimation(back, page, partial);
+				console.log(partial);
+			});
+			spa.route("more", "lib/more/more.html", function(back, page, partial) {
+				spa.callbackAnimation(back, page, partial);
+				console.log(partial);
+			});
+			spa.route("modal", "lib/modal/modal.html", function(back, page, partial) {
+				spa.callbackAnimation(back, page, partial);
+				console.log(partial);
+				spa.require("lib/modal/modal.js", partial);
+			});
+			// 页面刷新后更新，否则空白
+			spa.refresh();
+		}
+	</script>
+</body>
+</html>

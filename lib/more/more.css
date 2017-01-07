@@ -1,0 +1,26 @@
+
+.more-wraper {
+	height: 100%;
+	background-color: #F4F4F4;
+}
+
+.more-wraper h4 {
+	padding: 5px;
+	background-color: #10a0ea;
+	color: #fff;
+	text-align: center;
+}
+
+.more-wraper .more-group {
+	margin-top: 30px;
+	padding-bottom: 20px;
+	background-color: #fff;
+}
+
+.more-wraper a {
+	color: #10a0ea;
+}
+
+.more-wraper .more-group div {
+	padding: 10px;
+}

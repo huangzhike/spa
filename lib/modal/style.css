@@ -1,0 +1,29 @@
+
+.container {
+	margin-top: 50px;
+	background-color: #fff;
+}
+
+.btn {
+	padding: .9375rem;
+	background: #fff;
+	text-align: center
+}
+
+.btn button {
+	margin: 0 1rem 1rem 0;
+	padding: .75em 1em;
+	border: 1px solid #0e90d2;
+	border-radius: 0;
+	background: #0e90d2;
+	color: #fff;
+	font-size: 1rem;
+	cursor: pointer
+}
+
+.discription {
+	padding: .3125rem .9375rem;
+	color: #6d6d72;
+	text-align: center;
+	font-size: .875rem
+}
