@@ -1,6 +1,7 @@
 (function() {
 
 	// SPA
+
 	function SPA() {
 		// 存放注册的页面
 		this.routers = {};
@@ -29,7 +30,8 @@
 		// 分页hash，每个页面都对应一个对象
 		this.routers[partial] = {
 			// 回调函数
-			callback: callback || function() {},
+			callback: callback ||
+			function() {},
 			// 分页的请求路径
 			path: path,
 			// 回调加载脚本的状态
@@ -62,11 +64,7 @@
 			this.turnBack(partial);
 			return;
 		}
-		// loading动画，pp助手上截的
-		// 可以在F12 Network里throttling模拟低网速的动画
-		var loading = document.getElementById("spa-loading");
-		loading.style.display = "block";
-			
+
 		// 更新上一页
 		prePage = nowPage;
 		console.log(prePage);
@@ -77,17 +75,15 @@
 				var pa = i;
 			}
 		}
+
+		// 从回退的页面请求新页面，回退的旧页面移走
+		removePage.call(this, "spa-old", " translate3d(0, 0, 0)", pa);
+		// 从非回退的页面请求新页面，原来的页面移走
+		removePage.call(this, "spa-new", " translate3d(-200%, 0, 0)", pa);
 		var that = this;
 		// 请求新页面
 		ajax("GET", this.routers[partial].path, "", function(goBack, page) {
-
 			// ajax完成回调
-			loading.style.display = "none";
-			// 从回退的页面请求新页面，回退的旧页面移走
-			removePage.call(that, "spa-old", " translate3d(0, 0, 0)", pa);
-			// 从非回退的页面请求新页面，原来的页面移走
-			removePage.call(that, "spa-new", " translate3d(-200%, 0, 0)", pa);
-
 			// 新页面回调
 			that.routers[partial].callback(goBack, page, partial);
 		});
@@ -115,21 +111,22 @@
 		}
 		goBack = true;
 		console.log("go to previous page");
-		var that = this;
 
 		for (var i in this.routers) {
 			if (this.routers[i].path == nowPage) {
 				var pa = i;
 			}
 		}
+		// 从回退的页面推到首页，回退的旧页面移走
+		removePage.call(this, "spa-old", " translate3d(200%, 0, 0)", pa);
+		// 或者从新页退到旧页面
+		removePage.call(this, "spa-new", " translate3d(100%, 0, 0)", pa);
+
+		var that = this;
 
 		// 请求上一页
 		ajax("GET", prePage, "", function(goBack, page) {
 			// ajax完成回调
-			// 从回退的页面推到首页，回退的旧页面移走
-			removePage.call(that, "spa-old", " translate3d(200%, 0, 0)", pa);
-			// 或者从新页退到旧页面
-			removePage.call(that, "spa-new", " translate3d(100%, 0, 0)", pa);
 			// 上一页的回调
 			for (var i in that.routers) {
 				if (that.routers[i].path == prePage) {
@@ -140,6 +137,7 @@
 	};
 
 	// ajax请求函数
+
 	function ajax(method, path, data, callback) {
 
 		var XHR = new XMLHttpRequest();
@@ -166,6 +164,7 @@
 	SPA.prototype.callbackAnimation = function(goBack, page, partial) {
 		console.log(this);
 		var that = this;
+
 		// 如果是回退，创建回退的页面，否则创建新请求的页面
 		goBack ? createPage.call(this, page, "spa-old", " translate3d(100%, 0, 0)", partial) : createPage.call(this, page, "spa-new", " translate3d(-100%, 0, 0)", partial);
 		console.log("callback done");
@@ -174,36 +173,37 @@
 	// 因为innerHTML插入的脚本不会执行，所以添加了回调加载脚本
 	SPA.prototype.require = function(path, partial) {
 
+		if (this.routers[partial].fn) return;
+		// 插入的script无法监听window.onload，因为是回调加载，此时已经loaded
+		// 另外一个问题是，从别的page再回到原来page时，因为原来的page已经removeChild，DOM绑定的事件也没了
+		// 方法1：不移除页面，只是显示隐藏，这样有点low
+		// 方法2：移除原来的页面同时移除script，请求页面同时再插入script
+		// 方法3：removeChild时保存返回的DOM，请求时再插入
+		// 因为移除DOM并没有移除事件监听，因为闭包，保存在内存里，要完全移除还得手动解除监听
+		// 另外，把删除的子节点赋值给 x，这个子节点不在DOM树中，但还存在内存中，可通过 x 操作
+		// 如果要完全删除对象，要把 x 设为null
+		var b = document.getElementsByTagName("body")[0];
+		var s = document.createElement("script");
 		var that = this;
-		if (!this.routers[partial].fn) {
-
-			// 插入的script无法监听window.onload，因为是回调加载，此时已经loaded
-			// 另外一个问题是，从别的page再回到原来page时，因为原来的page已经removeChild，DOM绑定的事件也没了
-			// 方法1：不移除页面，只是显示隐藏，这样有点low
-			// 方法2：移除原来的页面同时移除script，请求页面同时再插入script
-			// 方法3：removeChild时保存返回的DOM，请求时再插入
-			// 因为移除DOM并没有移除事件监听，因为闭包，保存在内存里，要完全移除还得手动解除监听
-			// 另外，把删除的子节点赋值给 x，这个子节点不在DOM树中，但还存在内存中，可通过 x 操作
-			// 如果要完全删除对象，要把 x 设为null
-			// 这种方法在disable cache 并且 throttling低网速时css加载在缓存的DOM后面，有段时间html没有样式
-			// 当然如果提取把所有css预先合并加载了而不是在请求页面时再加载就没事了
-			// 下面都是在请求时加载的，没有预先加载css或js
-			var b = document.getElementsByTagName("body")[0];
-			var s = document.createElement("script");
-			// 注意此path是相对主页的路径，不是加载页的路径
-			s.src = path;
-			s.async = true;
-			s.onload = function() {
-				that.routers[partial].fn = true;
-			}
-
-			b.appendChild(s);
+		// 注意此path是相对主页的路径，不是加载页的路径
+		s.src = path;
+		s.async = true;
+		s.onload = function() {
+			that.routers[partial].fn = true;
 		}
+
+		b.appendChild(s);
+		
 	};
 
 	var p = document.getElementById("spa-page");
 
+	// loading动画，pp助手上截的
+	// 可以在F12 Network里throttling模拟低网速的动画
+	var loading = document.getElementById("spa-loading");
+
 	// 创建页面
+
 	function createPage(page, cls, trans, partial) {
 
 		var a = this.routers[partial].temp || document.createElement("div");
@@ -216,23 +216,30 @@
 			a.innerHTML = page;
 		}
 		p.appendChild(a);
+		loading.style.display = "none";
 		// reflow触发动画
 		a.offsetWidth = a.offsetWidth;
+
 		a.style.transform = trans;
 		console.log(a);
 	}
 
 	// 移除页面
+
 	function removePage(cls, trans, pa) {
 
 		var a = document.getElementById(cls);
 		if (!a) return;
 		a.style.transform = trans;
+		loading.style.display = "block";
+
 		var that = this;
+
 		// 因为移除不是即时的，如果超快速点击切换页面可能有bug
 		setTimeout(function() {
 			console.log(pa);
 			that.routers[pa].temp = p.removeChild(a);
+
 			console.log(that.routers[pa].temp);
 		}, 400);
 
