@@ -138,6 +138,7 @@ ul {
 	border: 1px solid #3bb4f2;
 	background: #3bb4f2;
 	color: #fff;
+	font-family: inherit;
 	font-size: 1rem;
 	cursor: pointer
 }

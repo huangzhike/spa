@@ -39,6 +39,8 @@
 			temp: null
 		}
 
+		return this;
+
 	};
 
 	// hashchange后更新页面，非常简单的路由
@@ -86,6 +88,8 @@
 			// 新页面回调
 			that.routers[partial].callback(goBack, page, partial);
 		});
+
+		return this;
 
 	};
 

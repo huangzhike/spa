@@ -43,22 +43,19 @@
 			spa.route("home", "lib/home/home.html", function(back, page, partial) {
 				spa.callbackAnimation(back, page, partial);
 				console.log(partial);
-			});
-			spa.route("about", "lib/about/about.html", function(back, page, partial) {
+			}).route("about", "lib/about/about.html", function(back, page, partial) {
 				spa.callbackAnimation(back, page, partial);
 				console.log(partial);
-			});
-			spa.route("more", "lib/more/more.html", function(back, page, partial) {
+			}).route("more", "lib/more/more.html", function(back, page, partial) {
 				spa.callbackAnimation(back, page, partial);
 				console.log(partial);
-			});
-			spa.route("modal", "lib/modal/modal.html", function(back, page, partial) {
+			}).route("modal", "lib/modal/modal.html", function(back, page, partial) {
 				spa.callbackAnimation(back, page, partial);
 				console.log(partial);
 				spa.require("lib/modal/modal.js", partial);
-			});
+			}).refresh();
 			// 页面刷新后更新，否则空白
-			spa.refresh();
+			
 		}
 	</script>
 </body>
