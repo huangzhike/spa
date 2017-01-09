@@ -56,6 +56,9 @@ a {
 	left: 0;
 	right: 0;
 	z-index: 99;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
 	display: flex;
 	height: 40px;
 	background-color: #0e90d2;
@@ -64,6 +67,7 @@ a {
 
 .spa-footer div {
 	text-align: center;
+	-webkit-box-flex: 1;
 	flex: 1;
 }
 

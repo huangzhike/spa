@@ -30,8 +30,7 @@
 		// 分页hash，每个页面都对应一个对象
 		this.routers[partial] = {
 			// 回调函数
-			callback: callback ||
-			function() {},
+			callback: callback || function() {},
 			// 分页的请求路径
 			path: path,
 			// 回调加载脚本的状态
@@ -77,9 +76,9 @@
 		}
 
 		// 从回退的页面请求新页面，回退的旧页面移走
-		removePage.call(this, "spa-old", " translate3d(0, 0, 0)", pa);
+		removePage.call(this, "spa-old", "(0, 0, 0)", pa);
 		// 从非回退的页面请求新页面，原来的页面移走
-		removePage.call(this, "spa-new", " translate3d(-200%, 0, 0)", pa);
+		removePage.call(this, "spa-new", "(-200%, 0, 0)", pa);
 		var that = this;
 		// 请求新页面
 		ajax("GET", this.routers[partial].path, "", function(goBack, page) {
@@ -97,6 +96,7 @@
 	// home是退到home页，因为只支持一级的回退，点击home回退后再点击back是无效的，因为已经回退了
 	// 最后一种是点击了a，再点击b，再点击a，此时不是打开新页面a，而是回退到a
 	// 其它都算打开新页面，动画方向不同
+	// 后来发觉用处不大，因为浏览器的后退键可以取代它，多此一举了
 	SPA.prototype.turnBack = function(partial) {
 
 		var o = document.getElementById("spa-old");
@@ -118,9 +118,9 @@
 			}
 		}
 		// 从回退的页面推到首页，回退的旧页面移走
-		removePage.call(this, "spa-old", " translate3d(200%, 0, 0)", pa);
+		removePage.call(this, "spa-old", "(200%, 0, 0)", pa);
 		// 或者从新页退到旧页面
-		removePage.call(this, "spa-new", " translate3d(100%, 0, 0)", pa);
+		removePage.call(this, "spa-new", "(100%, 0, 0)", pa);
 
 		var that = this;
 
@@ -166,7 +166,7 @@
 		var that = this;
 
 		// 如果是回退，创建回退的页面，否则创建新请求的页面
-		goBack ? createPage.call(this, page, "spa-old", " translate3d(100%, 0, 0)", partial) : createPage.call(this, page, "spa-new", " translate3d(-100%, 0, 0)", partial);
+		goBack ? createPage.call(this, page, "spa-old", "(100%, 0, 0)", partial) : createPage.call(this, page, "spa-new", "(-100%, 0, 0)", partial);
 		console.log("callback done");
 	};
 
@@ -220,7 +220,9 @@
 		// reflow触发动画
 		a.offsetWidth = a.offsetWidth;
 
-		a.style.transform = trans;
+ 		a.style.msTransform = "translate3D" + trans;
+ 		a.style.webkitTransform = "translate3D" + trans;
+ 		a.style.transform = "translate3D" + trans;
 		console.log(a);
 	}
 
@@ -230,7 +232,11 @@
 
 		var a = document.getElementById(cls);
 		if (!a) return;
-		a.style.transform = trans;
+
+ 		a.style.msTransform = "translate3D" + trans;
+ 		a.style.webkitTransform = "translate3D" + trans;
+ 		a.style.transform = "translate3D" + trans;
+ 		
 		loading.style.display = "block";
 
 		var that = this;
