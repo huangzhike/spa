@@ -68,7 +68,6 @@
 
 		// 更新上一页
 		prePage = nowPage;
-		console.log(prePage);
 		goBack = false;
 
 		for (var i in this.routers) {
@@ -86,7 +85,8 @@
 		ajax("GET", this.routers[partial].path, "", function(goBack, page) {
 			// ajax完成回调
 			// 新页面回调
-			that.routers[partial].callback(goBack, page, partial);
+			that.routers[partial].callback(partial);
+			that.callbackAnimation(goBack, page, partial);
 		});
 
 		return this;
@@ -134,7 +134,8 @@
 			// 上一页的回调
 			for (var i in that.routers) {
 				if (that.routers[i].path == prePage) {
-					that.routers[i].callback(goBack, page, partial);
+					that.routers[i].callback(partial);
+					that.callbackAnimation(goBack, page, partial);
 				}
 			}
 		});
@@ -166,9 +167,6 @@
 
 	// ajax完成后插入新页面
 	SPA.prototype.callbackAnimation = function(goBack, page, partial) {
-		console.log(this);
-		var that = this;
-
 		// 如果是回退，创建回退的页面，否则创建新请求的页面
 		goBack ? createPage.call(this, page, "spa-old", "(100%, 0, 0)", partial) : createPage.call(this, page, "spa-new", "(-100%, 0, 0)", partial);
 		console.log("callback done");

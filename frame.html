@@ -40,22 +40,14 @@
 		window.onload = function() {
 			var spa = new SPA();
 			// 给页面注册，或者说映射（mapping）
-			spa.route("home", "lib/home/home.html", function(back, page, partial) {
-				spa.callbackAnimation(back, page, partial);
-				console.log(partial);
-			}).route("about", "lib/about/about.html", function(back, page, partial) {
-				spa.callbackAnimation(back, page, partial);
-				console.log(partial);
-			}).route("more", "lib/more/more.html", function(back, page, partial) {
-				spa.callbackAnimation(back, page, partial);
-				console.log(partial);
-			}).route("modal", "lib/modal/modal.html", function(back, page, partial) {
-				spa.callbackAnimation(back, page, partial);
-				console.log(partial);
-				spa.require("lib/modal/modal.js", partial);
-			}).refresh();
-			// 页面刷新后更新，否则空白
-			
+			spa.route("home", "lib/home/home.html")
+				.route("about", "lib/about/about.html")
+				.route("more", "lib/more/more.html")
+				.route("modal", "lib/modal/modal.html", function(partial) {
+					spa.require("lib/modal/modal.js", partial);
+				})
+				.refresh();
+				// 页面刷新后更新，否则空白
 		}
 	</script>
 </body>

@@ -1,3 +1,21 @@
+ul {
+	padding: 0;
+	background: #fff;
+	list-style: none;
+}
+
+input {
+	display: block;
+	box-sizing: border-box;
+	padding: 15px 10px;
+	width: 100%;
+	outline: 0;
+	border: 1px solid #ccc;
+	font-family: inherit;
+}
+
+/* 美化，格式化，合并代码工具，tool.lu，虽然可以用sublime插件或gulp什么的，但这个效果更好 */
+/* css combo, px to rem等等*/
 
 .modal-back {
 	position: fixed;
@@ -7,8 +25,7 @@
 	left: 0;
 	z-index: 10;
 	background: rgba(0,0,0,.3);
-	font-weight: 500;
-	font-size: 1.125rem
+	font-size: 16px;
 }
 
 .modal-others {
@@ -23,72 +40,53 @@
 	opacity: 0;
 	transition: all .3s;
 	-webkit-transform: translate3d(-50%,-50%,0) scale(.8);
-	transform: translate3d(-50%,-50%,0) scale(.8)
+	transform: translate3d(-50%,-50%,0) scale(.8);
 }
 
 .modal-active .modal-others {
 	opacity: 1;
 	-webkit-transform: translate3d(-50%,-50%,0) scale(1);
-	transform: translate3d(-50%,-50%,0) scale(1)
+	transform: translate3d(-50%,-50%,0) scale(1);
 }
 
-/*http://tool.lu/ 一个好网站，各种代码美化与格式化，合并，虽然可以用sublime插件或gulp什么的，有感而发*/
 .form-set,.modal-content,.modal-title {
-	padding: .9375rem .625rem
-}
-
-input {
-	display: block;
-	box-sizing: border-box;
-	font-family: inherit;
-	padding: .75rem .5rem;
-	width: 100%;
-	outline: 0;
-	border: 1px solid #ccc
+	padding: 18px 12px;
 }
 
 .modal-btns {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
-	border-top: 1px solid #dedede
+	border-top: 1px solid #dedede;
 }
 
 .modal-others button {
-	display: block;
-	overflow: hidden;
 	outline: 0;
 	border: none;
 	background: #f8f8f8;
 	color: #0e90d2;
-	text-align: center;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	font-family: inherit;
-	font-size: 1rem;
-	line-height: 2.75rem;
+	line-height: 40px;
 	cursor: pointer;
 	-webkit-box-flex: 1;
 	-ms-flex: 1;
 	flex: 1;
-	font-weight: 500;
 }
 
 .modal-others button:nth-child(2) {
 	border-left: 1px solid #dedede;
-} 
+}
 
 .modal-close {
 	position: absolute;
-	top: .3125rem;
-	right: .3125rem;
-	display: block;
-	width: 1.5rem;
-	height: 1.5rem;
+	top: 6px;
+	right: 6px;
+	width: 30px;
+	height: 30px;
 	-webkit-border-radius: 50%;
 	border-radius: 50%;
 	background-color: #333;
-	cursor: pointer
+	cursor: pointer;
 }
 
 .modal-action {
@@ -100,45 +98,36 @@ input {
 	opacity: 0;
 	transition: all .3s;
 	-webkit-transform: translate3d(0,100%,0);
-	transform: translate3d(0,100%,0)
+	transform: translate3d(0,100%,0);
 }
 
 .modal-active .modal-action {
 	opacity: 1;
 	-webkit-transform: translate3d(0,0,0);
-	transform: translate3d(0,0,0)
+	transform: translate3d(0,0,0);
 }
 
 .modal-action-group {
-	margin: .625rem;
-	text-align: center
-}
-
-ul {
-	padding: 0;
-	background: #fff;
-	list-style: none
+	margin: 12px;
+	text-align: center;
 }
 
 .modal-action-group li {
+	/* 合并上下border */
 	margin-bottom: -1px;
-	padding: .625rem .9375rem;
+	padding: 12px;
 	border: 1px solid #e6e6e6;
 	border-width: 1px 0;
 	color: #888;
-	font-size: .875rem;
-	font-size: 1rem;
-	align-items: center
 }
 
 .modal-action-group button {
-	margin: 0 1rem 1rem 0;
-	padding: .75em 1em;
+	margin: 0 20px 20px 0;
+	padding: 10px;
 	width: 100%;
 	border: 1px solid #3bb4f2;
 	background: #3bb4f2;
 	color: #fff;
 	font-family: inherit;
-	font-size: 1rem;
-	cursor: pointer
+	cursor: pointer;
 }
