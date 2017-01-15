@@ -9,7 +9,7 @@
 
 **待添加：**
 * HTML5 history.pushState + AJAX = PJAX；
-* 其它。
+* 拦截a标签跳转，AJAX更新页面。
 
 **注意：**
 * 不同页面的css，js要防止命名冲突；

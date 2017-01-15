@@ -13,24 +13,23 @@
 
 		// 后退按钮点击
 		spaBack.addEventListener("click", function() {
-			for (var i in that.routers) {
-				if (that.routers[i].path == prePage) {
-					// 改变hash触发后退
-					location.hash = "" + i;
-				}
-			}
+
+			// 改变hash触发后退
+			location.hash = "" + prePartial;
+
+
 		}, false);
 	}
 
 	// 是否返回上一页，上一页，当前页
-	var goBack, prePage, nowPage;
+	var goBack, prePartial, nowPartial;
 
 	// 注册分页
 	SPA.prototype.route = function(partial, path, req, callback) {
 		// 分页hash，每个页面都对应一个对象
 		this.routers[partial] = {
 			// 分页的请求路径
-			path: path,			
+			path: path,
 			// 加载脚本地址
 			req: req || [],
 			// 加载脚本的状态
@@ -55,33 +54,27 @@
 			partial = "home";
 			location.hash = "home";
 			// 防止在首页重定向时进行两次请求
-			for (var i in this.routers) {
-				if (this.routers[i].path == prePage) {
-					return;
-				}
+
+			if (prePartial) {
+				return;
 			}
+
 		}
 
 		// 如果点击的是之前的页面或首页就回退
-		if (this.routers[partial].path == prePage || partial == "home") {
+		if (partial == prePartial || partial == "home") {
 			this.turnBack(partial);
 			return;
 		}
 
 		// 更新上一页
-		prePage = nowPage;
+		prePartial = nowPartial;
 		goBack = false;
 
-		for (var i in this.routers) {
-			if (this.routers[i].path == prePage) {
-				var pa = i;
-			}
-		}
-
 		// 从回退的页面请求新页面，回退的旧页面移走
-		removePage.call(this, "spa-old", "(0, 0, 0)", pa);
+		removePage.call(this, "spa-old", "(0, 0, 0)", prePartial);
 		// 从非回退的页面请求新页面，原来的页面移走
-		removePage.call(this, "spa-new", "(-200%, 0, 0)", pa);
+		removePage.call(this, "spa-new", "(-200%, 0, 0)", prePartial);
 
 		// 异步加载js
 		if (this.routers[partial].js[this.routers[partial].js.length]) {
@@ -92,9 +85,11 @@
 		// 请求新页面
 		ajax("GET", this.routers[partial].path, "", function(goBack, page) {
 			// ajax完成回调
-			// 新页面回调
 			that.routers[partial].callback(partial);
 			that.callbackAnimation(goBack, page, partial);
+
+			// 更新当前页面
+			nowPartial = partial;
 		});
 
 		return this;
@@ -108,7 +103,7 @@
 	// home是退到home页，因为只支持一级的回退，点击home回退后再点击back是无效的，因为已经回退了
 	// 最后一种是点击了a，再点击b，再点击a，此时不是打开新页面a，而是回退到a
 	// 其它都算打开新页面，动画方向不同
-	// 后来发觉用处不大，因为浏览器的后退键可以取代它，多此一举了
+	// 发现浏览器后退键时从缓存加载，动画可能出现bug
 	SPA.prototype.turnBack = function(partial) {
 
 		var o = document.getElementById("spa-old");
@@ -119,20 +114,15 @@
 		}
 		// 点击首页回退
 		if (partial == "home") {
-			prePage = this.routers[partial].path;
+			prePartial = partial;
 		}
 		goBack = true;
 		console.log("go to previous page");
 
-		for (var i in this.routers) {
-			if (this.routers[i].path == nowPage) {
-				var pa = i;
-			}
-		}
 		// 从回退的页面推到首页，回退的旧页面移走
-		removePage.call(this, "spa-old", "(200%, 0, 0)", pa);
+		removePage.call(this, "spa-old", "(200%, 0, 0)", nowPartial);
 		// 或者从新页退到旧页面
-		removePage.call(this, "spa-new", "(100%, 0, 0)", pa);
+		removePage.call(this, "spa-new", "(100%, 0, 0)", nowPartial);
 
 		var that = this;
 
@@ -143,15 +133,19 @@
 		}
 
 		// 请求上一页
-		ajax("GET", prePage, "", function(goBack, page) {
+		console.log(prePartial)
+		ajax("GET", this.routers[prePartial].path, "", function(goBack, page) {
 			// ajax完成回调
 			// 上一页的回调
-			for (var i in that.routers) {
-				if (that.routers[i].path == prePage) {
-					that.routers[i].callback(partial);
-					that.callbackAnimation(goBack, page, partial);
-				}
+
+			if (prePartial) {
+				that.routers[prePartial].callback(prePartial);
+				that.callbackAnimation(goBack, page, prePartial);
+
+				// 更新当前页面
+				nowPartial = partial;
 			}
+
 		});
 	};
 
@@ -172,8 +166,7 @@
 				// ajax完成的回调
 				// console.log("responseText: "+ XHR.responseText);
 				callback(goBack, XHR.responseText);
-				// 更新当前页面
-				nowPage = path;
+
 			}
 		}
 
@@ -186,7 +179,6 @@
 		console.log("callback done");
 	};
 
-	
 	// 从别的page再回到原来page时，因为原来的page已经removeChild，DOM绑定的事件也没了
 	// 方法1：不移除页面，只是显示隐藏，这样有点low
 	// 方法2：移除原来的页面同时移除script，请求页面同时再插入script
@@ -194,7 +186,6 @@
 	// 因为移除DOM并没有移除事件监听，因为闭包，保存在内存里，要完全移除还得手动解除监听
 	// 另外，把删除的子节点赋值给 x，这个子节点不在DOM树中，但还存在内存中，可通过 x 操作
 	// 如果要完全删除对象，要把 x 设为null
-
 
 	// 本来是在ajax请求的html片段里放script标签的，但innerHTML插入的脚本不会执行
 	// 之前回调插入的script无法监听window.onload，此时已经loaded，现在改为直接加载
@@ -206,24 +197,18 @@
 		var downloaded = this.routers[partial].js
 		// true or false 异步或回调
 		for (var i = 0; i < js.length - 1; i++) {
-
 			if (!downloaded[i]) {
-
 				var s = document.createElement("script");
 				// 注意是相对主页的路径，不是加载页的路径
 				s.src = js[i];
 				s.async = true;
 				// 闭包，获取i的值
 				s.onload = (function(i) {
-
 					return function() {
-						console.log(i);
 						that.routers[partial].js[i] = true;
 					}
-
 				})(i);
 				b.appendChild(s);
-
 			}
 		}
 	};

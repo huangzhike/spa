@@ -50,7 +50,7 @@ input {
 }
 
 .form-set,.modal-content,.modal-title {
-	padding: 14px 12px;
+	padding: 12px;
 }
 
 .modal-btns {
@@ -117,7 +117,7 @@ input {
 .modal-action-group li {
 	/* 合并上下border */
 	margin-bottom: -1px;
-	padding: 12px;
+	padding: 10px;
 	border: 1px solid #e6e6e6;
 	border-width: 1px 0;
 	color: #888;
