@@ -50,17 +50,19 @@ input {
 }
 
 .form-set,.modal-content,.modal-title {
-	padding: 18px 12px;
+	padding: 14px 12px;
 }
 
 .modal-btns {
 	display: -webkit-box;
+	display: -webkit-flex;
 	display: -ms-flexbox;
 	display: flex;
 	border-top: 1px solid #dedede;
 }
 
 .modal-others button {
+	display: block;
 	outline: 0;
 	border: none;
 	background: #f8f8f8;

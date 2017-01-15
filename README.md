@@ -24,7 +24,7 @@
 * 欢迎create an issue，欢迎讨论。
 
 **感谢：**
-* 路由注册和异步加载方面，借鉴了[kliuj](https://github.com/kliuj)的[spa-routers](https://github.com/kliuj/spa-routers)做法，之前因为自己弄错了还向他提了Issue，惭愧；
+* 路由注册和异步加载方面，参考了[kliuj](https://github.com/kliuj)的[spa-routers](https://github.com/kliuj/spa-routers)做法；
 * UI是山寨[Amaze UI TOUCH](http://t.amazeui.org/)的，呵呵。
 * Modal是之前山寨[Amaze UI TOUCH](http://t.amazeui.org/kitchen-sink/#/modal)的作品；
-* 这只是一个非常简陋的玩具，去掉注释不够两百行，还有很多功能没实现，以后会补充完善！
+* 这只是一个玩具框架，去掉注释不够两百行，还有很多功能没实现，以后会补充完善！

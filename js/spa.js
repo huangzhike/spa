@@ -26,15 +26,17 @@
 	var goBack, prePage, nowPage;
 
 	// 注册分页
-	SPA.prototype.route = function(partial, path, callback) {
+	SPA.prototype.route = function(partial, path, req, callback) {
 		// 分页hash，每个页面都对应一个对象
 		this.routers[partial] = {
+			// 分页的请求路径
+			path: path,			
+			// 加载脚本地址
+			req: req || [],
+			// 加载脚本的状态
+			js: [],
 			// 回调函数
 			callback: callback || function() {},
-			// 分页的请求路径
-			path: path,
-			// 回调加载脚本的状态
-			fn: null,
 			// 分页DOM
 			temp: null
 		}
@@ -80,6 +82,12 @@
 		removePage.call(this, "spa-old", "(0, 0, 0)", pa);
 		// 从非回退的页面请求新页面，原来的页面移走
 		removePage.call(this, "spa-new", "(-200%, 0, 0)", pa);
+
+		// 异步加载js
+		if (this.routers[partial].js[this.routers[partial].js.length]) {
+			this.require(partial);
+		}
+
 		var that = this;
 		// 请求新页面
 		ajax("GET", this.routers[partial].path, "", function(goBack, page) {
@@ -128,6 +136,12 @@
 
 		var that = this;
 
+		// 异步加载js
+
+		if (this.routers[partial].js[this.routers[partial].js.length]) {
+			this.require(partial);
+		}
+
 		// 请求上一页
 		ajax("GET", prePage, "", function(goBack, page) {
 			// ajax完成回调
@@ -172,30 +186,46 @@
 		console.log("callback done");
 	};
 
-	// 因为innerHTML插入的脚本不会执行，所以添加了回调加载脚本
-	SPA.prototype.require = function(path, partial) {
+	
+	// 从别的page再回到原来page时，因为原来的page已经removeChild，DOM绑定的事件也没了
+	// 方法1：不移除页面，只是显示隐藏，这样有点low
+	// 方法2：移除原来的页面同时移除script，请求页面同时再插入script
+	// 方法3：removeChild时保存返回的DOM，请求时再插入
+	// 因为移除DOM并没有移除事件监听，因为闭包，保存在内存里，要完全移除还得手动解除监听
+	// 另外，把删除的子节点赋值给 x，这个子节点不在DOM树中，但还存在内存中，可通过 x 操作
+	// 如果要完全删除对象，要把 x 设为null
 
-		if (this.routers[partial].fn) return;
-		// 插入的script无法监听window.onload，因为是回调加载，此时已经loaded
-		// 另外一个问题是，从别的page再回到原来page时，因为原来的page已经removeChild，DOM绑定的事件也没了
-		// 方法1：不移除页面，只是显示隐藏，这样有点low
-		// 方法2：移除原来的页面同时移除script，请求页面同时再插入script
-		// 方法3：removeChild时保存返回的DOM，请求时再插入
-		// 因为移除DOM并没有移除事件监听，因为闭包，保存在内存里，要完全移除还得手动解除监听
-		// 另外，把删除的子节点赋值给 x，这个子节点不在DOM树中，但还存在内存中，可通过 x 操作
-		// 如果要完全删除对象，要把 x 设为null
+
+	// 本来是在ajax请求的html片段里放script标签的，但innerHTML插入的脚本不会执行
+	// 之前回调插入的script无法监听window.onload，此时已经loaded，现在改为直接加载
+	SPA.prototype.require = function(partial) {
+
 		var b = document.getElementsByTagName("body")[0];
-		var s = document.createElement("script");
+		var js = this.routers[partial].req;
 		var that = this;
-		// 注意此path是相对主页的路径，不是加载页的路径
-		s.src = path;
-		s.async = true;
-		s.onload = function() {
-			that.routers[partial].fn = true;
-		}
+		var downloaded = this.routers[partial].js
+		// true or false 异步或回调
+		for (var i = 0; i < js.length - 1; i++) {
 
-		b.appendChild(s);
-		
+			if (!downloaded[i]) {
+
+				var s = document.createElement("script");
+				// 注意是相对主页的路径，不是加载页的路径
+				s.src = js[i];
+				s.async = true;
+				// 闭包，获取i的值
+				s.onload = (function(i) {
+
+					return function() {
+						console.log(i);
+						that.routers[partial].js[i] = true;
+					}
+
+				})(i);
+				b.appendChild(s);
+
+			}
+		}
 	};
 
 	var p = document.getElementById("spa-page");
@@ -222,9 +252,9 @@
 		// reflow触发动画
 		a.offsetWidth = a.offsetWidth;
 
- 		a.style.msTransform = "translate3D" + trans;
- 		a.style.webkitTransform = "translate3D" + trans;
- 		a.style.transform = "translate3D" + trans;
+		a.style.msTransform = "translate3D" + trans;
+		a.style.webkitTransform = "translate3D" + trans;
+		a.style.transform = "translate3D" + trans;
 		console.log(a);
 	}
 
@@ -235,10 +265,10 @@
 		var a = document.getElementById(cls);
 		if (!a) return;
 
- 		a.style.msTransform = "translate3D" + trans;
- 		a.style.webkitTransform = "translate3D" + trans;
- 		a.style.transform = "translate3D" + trans;
- 		
+		a.style.msTransform = "translate3D" + trans;
+		a.style.webkitTransform = "translate3D" + trans;
+		a.style.transform = "translate3D" + trans;
+
 		loading.style.display = "block";
 
 		var that = this;

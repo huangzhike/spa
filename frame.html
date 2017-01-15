@@ -43,11 +43,15 @@
 			spa.route("home", "lib/home/home.html")
 				.route("about", "lib/about/about.html")
 				.route("more", "lib/more/more.html")
-				.route("modal", "lib/modal/modal.html", function(partial) {
-					spa.require("lib/modal/modal.js", partial);
+				// 把js路径放在数组里，逗号连接，true表示异步加载js，false在回调中加载，只能选一个
+				.route("modal", "lib/modal/modal.html", ["lib/modal/modal.js", false], function(partial) {
+					// 回调中加载
+					spa.require(partial);
+					console.log("ok callback");
 				})
-				.refresh();
 				// 页面刷新后更新，否则空白
+				.refresh();
+				
 		}
 	</script>
 </body>
